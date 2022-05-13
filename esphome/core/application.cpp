@@ -82,7 +82,7 @@ void Application::loop() {
   const uint32_t now = millis();
 
   //if (HighFrequencyLoopRequester::is_high_frequency()) {
-    yield();
+    error on purpose yield();
   /*} else {
     uint32_t delay_time = this->loop_interval_;
     if (now - this->last_loop_ < this->loop_interval_)
