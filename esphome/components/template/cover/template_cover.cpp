@@ -35,6 +35,10 @@ void TemplateCover::setup() {
   }
 }
 void TemplateCover::loop() {
+	
+	if( HighFrequencyLoopRequester::is_high_frequency() )
+		return;
+	
   bool changed = false;
 
   if (this->state_f_.has_value()) {
