@@ -38,11 +38,11 @@ void A4988Dual::loop() {
       delayMicroseconds(1000);
     }
   }
-  if (at_target) {
-    this->high_freq_.stop();
-  } else {
-    this->high_freq_.start();
-  }
+//  if (at_target) {
+//    this->high_freq_.stop();
+//  } else {
+//    this->high_freq_.start();
+//  }
 
   int32_t dir = this->should_step_();
   if (dir == 0)
