@@ -4,6 +4,7 @@
 #include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "esphome/components/climate/climate.h"
 #include "esphome/core/component.h"
+#include "esphome/core/defines.h"
 #include "esphome/core/hal.h"
 #include "bedjet_base.h"
 
@@ -67,6 +68,8 @@ class Bedjet : public climate::Climate, public esphome::ble_client::BLEClientNod
         // We could fetch biodata from bedjet and set these names that way.
         // But then we have to invert the lookup in order to send the right preset.
         // For now, we can leave them as M1-3 to match the remote buttons.
+        // EXT HT added to match remote button.
+        "EXT HT",
         "M1",
         "M2",
         "M3",
