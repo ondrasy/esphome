@@ -62,6 +62,11 @@ void TemplateCover::loop() {
     }
   }
 
+  if( !changed && ( this->current_operation != CoverOperation::COVER_OPERATION_IDLE ) ) {
+    this->current_operation = CoverOperation::COVER_OPERATION_IDLE;
+    changed = true;
+  }
+
   if (changed)
     this->publish_state();
 }
