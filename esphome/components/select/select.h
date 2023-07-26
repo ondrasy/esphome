@@ -17,6 +17,13 @@ namespace select {
     } \
   }
 
+#define SUB_SELECT(name) \
+ protected: \
+  select::Select *name##_select_{nullptr}; \
+\
+ public: \
+  void set_##name##_select(select::Select *select) { this->name##_select_ = select; }
+
 /** Base-class for all selects.
  *
  * A select can use publish_state to send out a new value.
@@ -64,8 +71,6 @@ class Select : public EntityBase {
    * @param value The value as validated by the SelectCall.
    */
   virtual void control(const std::string &value) = 0;
-
-  uint32_t hash_base() override;
 
   CallbackManager<void(std::string, size_t)> state_callback_;
   bool has_state_{false};

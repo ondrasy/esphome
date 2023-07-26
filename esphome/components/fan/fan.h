@@ -99,10 +99,6 @@ struct FanRestoreState {
 
 class Fan : public EntityBase {
  public:
-  Fan();
-  /// Construct the fan with name.
-  explicit Fan(const std::string &name);
-
   /// The current on/off state of the fan.
   bool state{false};
   /// The current oscillation state of the fan.
@@ -136,7 +132,6 @@ class Fan : public EntityBase {
   void save_state_();
 
   void dump_traits_(const char *tag, const char *prefix);
-  uint32_t hash_base() override;
 
   CallbackManager<void()> state_callback_{};
   ESPPreferenceObject rtc_;

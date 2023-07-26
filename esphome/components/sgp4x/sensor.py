@@ -6,8 +6,7 @@ from esphome.const import (
     CONF_STORE_BASELINE,
     CONF_TEMPERATURE_SOURCE,
     ICON_RADIATOR,
-    DEVICE_CLASS_NITROUS_OXIDE,
-    DEVICE_CLASS_VOLATILE_ORGANIC_COMPOUNDS,
+    DEVICE_CLASS_AQI,
     STATE_CLASS_MEASUREMENT,
 )
 
@@ -67,13 +66,13 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(CONF_VOC): sensor.sensor_schema(
                 icon=ICON_RADIATOR,
                 accuracy_decimals=0,
-                device_class=DEVICE_CLASS_VOLATILE_ORGANIC_COMPOUNDS,
+                device_class=DEVICE_CLASS_AQI,
                 state_class=STATE_CLASS_MEASUREMENT,
             ).extend(GAS_SENSOR),
             cv.Optional(CONF_NOX): sensor.sensor_schema(
                 icon=ICON_RADIATOR,
                 accuracy_decimals=0,
-                device_class=DEVICE_CLASS_NITROUS_OXIDE,
+                device_class=DEVICE_CLASS_AQI,
                 state_class=STATE_CLASS_MEASUREMENT,
             ).extend(GAS_SENSOR),
             cv.Optional(CONF_STORE_BASELINE, default=True): cv.boolean,
@@ -140,5 +139,7 @@ async def to_code(config):
                 )
             )
     cg.add_library(
-        None, None, "https://github.com/Sensirion/arduino-gas-index-algorithm.git"
+        None,
+        None,
+        "https://github.com/Sensirion/arduino-gas-index-algorithm.git#3.2.1",
     )

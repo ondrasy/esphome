@@ -67,6 +67,7 @@ enum SPIDataRate : uint32_t {
   DATA_RATE_10MHZ = 10000000,
   DATA_RATE_20MHZ = 20000000,
   DATA_RATE_40MHZ = 40000000,
+  DATA_RATE_80MHZ = 80000000,
 };
 
 class SPIComponent : public Component {
@@ -74,6 +75,7 @@ class SPIComponent : public Component {
   void set_clk(GPIOPin *clk) { clk_ = clk; }
   void set_miso(GPIOPin *miso) { miso_ = miso; }
   void set_mosi(GPIOPin *mosi) { mosi_ = mosi; }
+  void set_force_sw(bool force_sw) { force_sw_ = force_sw; }
 
   void setup() override;
 
@@ -105,7 +107,11 @@ class SPIComponent : public Component {
   void write_byte(uint8_t data) {
 #ifdef USE_SPI_ARDUINO_BACKEND
     if (this->hw_spi_ != nullptr) {
+#ifdef USE_RP2040
+      this->hw_spi_->transfer(data);
+#else
       this->hw_spi_->write(data);
+#endif
       return;
     }
 #endif  // USE_SPI_ARDUINO_BACKEND
@@ -116,7 +122,11 @@ class SPIComponent : public Component {
   void write_byte16(const uint16_t data) {
 #ifdef USE_SPI_ARDUINO_BACKEND
     if (this->hw_spi_ != nullptr) {
+#ifdef USE_RP2040
+      this->hw_spi_->transfer16(data);
+#else
       this->hw_spi_->write16(data);
+#endif
       return;
     }
 #endif  // USE_SPI_ARDUINO_BACKEND
@@ -130,7 +140,11 @@ class SPIComponent : public Component {
 #ifdef USE_SPI_ARDUINO_BACKEND
     if (this->hw_spi_ != nullptr) {
       for (size_t i = 0; i < length; i++) {
+#ifdef USE_RP2040
+        this->hw_spi_->transfer16(data[i]);
+#else
         this->hw_spi_->write16(data[i]);
+#endif
       }
       return;
     }
@@ -145,7 +159,11 @@ class SPIComponent : public Component {
 #ifdef USE_SPI_ARDUINO_BACKEND
     if (this->hw_spi_ != nullptr) {
       auto *data_c = const_cast<uint8_t *>(data);
+#ifdef USE_RP2040
+      this->hw_spi_->transfer(data_c, length);
+#else
       this->hw_spi_->writeBytes(data_c, length);
+#endif
       return;
     }
 #endif  // USE_SPI_ARDUINO_BACKEND
@@ -178,7 +196,11 @@ class SPIComponent : public Component {
       if (this->miso_ != nullptr) {
         this->hw_spi_->transfer(data, length);
       } else {
+#ifdef USE_RP2040
+        this->hw_spi_->transfer(data, length);
+#else
         this->hw_spi_->writeBytes(data, length);
+#endif
       }
       return;
     }
@@ -205,7 +227,11 @@ class SPIComponent : public Component {
       } else if (CLOCK_POLARITY && CLOCK_PHASE) {
         data_mode = SPI_MODE3;
       }
+#ifdef USE_RP2040
+      SPISettings settings(DATA_RATE, static_cast<BitOrder>(BIT_ORDER), data_mode);
+#else
       SPISettings settings(DATA_RATE, BIT_ORDER, data_mode);
+#endif
       this->hw_spi_->beginTransaction(settings);
     } else {
 #endif  // USE_SPI_ARDUINO_BACKEND
@@ -236,6 +262,7 @@ class SPIComponent : public Component {
   GPIOPin *miso_{nullptr};
   GPIOPin *mosi_{nullptr};
   GPIOPin *active_cs_{nullptr};
+  bool force_sw_{false};
 #ifdef USE_SPI_ARDUINO_BACKEND
   SPIClass *hw_spi_{nullptr};
 #endif  // USE_SPI_ARDUINO_BACKEND
