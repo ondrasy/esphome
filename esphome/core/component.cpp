@@ -169,7 +169,7 @@ float Component::get_actual_setup_priority() const {
 void Component::set_setup_priority(float priority) { this->setup_priority_override_ = priority; }
 
 bool Component::has_overridden_loop() const {
-#ifdef CLANG_TIDY
+#if defined(USE_HOST) || defined(CLANG_TIDY)
   bool loop_overridden = true;
   bool call_loop_overridden = true;
 #else
@@ -188,8 +188,18 @@ void PollingComponent::call_setup() {
   // Let the polling component subclass setup their HW.
   this->setup();
 
+  // init the poller
+  this->start_poller();
+}
+
+void PollingComponent::start_poller() {
   // Register interval.
   this->set_interval("update", this->get_update_interval(), [this]() { this->update(); });
+}
+
+void PollingComponent::stop_poller() {
+  // Clear the interval to suspend component
+  this->cancel_interval("update");
 }
 
 uint32_t PollingComponent::get_update_interval() const { return this->update_interval_; }

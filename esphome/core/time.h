@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <cstdlib>
 #include <ctime>
 #include <string>
@@ -45,6 +46,10 @@ struct ESPTime {
    *
    * @warning This method uses dynamically allocated strings which can cause heap fragmentation with some
    * microcontrollers.
+   *
+   * @warning This method can return "ERROR" when the underlying strftime() call fails, e.g. when the
+   * format string contains unsupported specifiers or when the format string doesn't produce any
+   * output.
    */
   std::string strftime(const std::string &format);
 
